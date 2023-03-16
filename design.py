@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+import re
 
 @dataclass
 class User:
@@ -78,10 +78,12 @@ class Tinder:
         if len(interests) < 1 or len(interests) > 5:
             raise ValueError("user must have from 1 to 5 interests")
 
-        invalid_interests = [i for i in interests if len(i) < 1 or len(i) > 20]
-        if invalid_interests:
-            raise ValueError("an interest must be from 1 to 20 symbols long")
-
+        for i in interests:
+            if len(i) < 1 or len(i) > 20:
+                raise ValueError("an interest must be from 1 to 20 symbols long")
+            elif not re.match("^[A-Za-z ]*$", i):
+                raise ValueError("an interest must contains only Latin symbols and spaces")
+        
         unique_interests = list(set(interests))
 
         self.storage.create_user(
